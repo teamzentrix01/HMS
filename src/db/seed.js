@@ -353,12 +353,21 @@ export async function seedDatabase() {
     }
 
     // 14. Demo Users & Accounts
-    const defaultPassword = "Jigyasa@2026";
+    const defaultPassword = process.env.DEMO_PASSWORD || "Jigyasa@2026";
+    const demoEmails = {
+      admin: process.env.DEMO_ADMIN_EMAIL || "admin@jigyasa.demo",
+      doctor: process.env.DEMO_DOCTOR_EMAIL || "doctor@jigyasa.demo",
+      nurse: process.env.DEMO_NURSE_EMAIL || "nurse@jigyasa.demo",
+      reception: process.env.DEMO_RECEPTION_EMAIL || "reception@jigyasa.demo",
+      lab: process.env.DEMO_LAB_EMAIL || "lab@jigyasa.demo",
+      pharmacy: process.env.DEMO_PHARMACY_EMAIL || "pharmacy@jigyasa.demo",
+      billing: process.env.DEMO_BILLING_EMAIL || "billing@jigyasa.demo",
+    };
     const passwordHash = await bcrypt.hash(defaultPassword, 10);
 
     const usersToCreate = [
       {
-        email: "admin@jigyasa.demo",
+        email: demoEmails.admin,
         username: "admin",
         role: "hospital_admin",
         first: "Vikram",
@@ -370,7 +379,7 @@ export async function seedDatabase() {
         desig: "Chief Executive Officer & Medical Superintendent",
       },
       {
-        email: "doctor@jigyasa.demo",
+        email: demoEmails.doctor,
         username: "doctor",
         role: "doctor",
         first: "Arvind",
@@ -382,7 +391,7 @@ export async function seedDatabase() {
         desig: "Senior Consultant Cardiologist",
       },
       {
-        email: "nurse@jigyasa.demo",
+        email: demoEmails.nurse,
         username: "nurse",
         role: "nurse",
         first: "Pooja",
@@ -394,7 +403,7 @@ export async function seedDatabase() {
         desig: "Senior Nursing Officer (ICU Supervisor)",
       },
       {
-        email: "reception@jigyasa.demo",
+        email: demoEmails.reception,
         username: "reception",
         role: "receptionist",
         first: "Sneha",
@@ -406,7 +415,7 @@ export async function seedDatabase() {
         desig: "Front Desk & Admission Coordinator",
       },
       {
-        email: "lab@jigyasa.demo",
+        email: demoEmails.lab,
         username: "lab",
         role: "lab_tech",
         first: "Rahul",
@@ -418,7 +427,7 @@ export async function seedDatabase() {
         desig: "Senior Medical Laboratory Technologist",
       },
       {
-        email: "pharmacy@jigyasa.demo",
+        email: demoEmails.pharmacy,
         username: "pharmacy",
         role: "pharmacist",
         first: "Amit",
@@ -430,7 +439,7 @@ export async function seedDatabase() {
         desig: "Chief Inpatient Pharmacist",
       },
       {
-        email: "billing@jigyasa.demo",
+        email: demoEmails.billing,
         username: "billing",
         role: "cashier",
         first: "Deepak",
@@ -581,10 +590,10 @@ export async function seedDatabase() {
     }
 
     // 16. Sample Encounters
-    const doctorUserId = userMap["doctor@jigyasa.demo"];
+    const doctorUserId = userMap[demoEmails.doctor];
     const cardioDeptId = departmentMap["CARDIO"];
     const emergDeptId = departmentMap["EMERG"];
-    const nurseUserId = userMap["nurse@jigyasa.demo"];
+    const nurseUserId = userMap[demoEmails.nurse];
 
     if (patientMap["JGY-2026-01001"] && doctorUserId && cardioDeptId) {
       const pId = patientMap["JGY-2026-01001"];
@@ -718,7 +727,7 @@ export async function seedDatabase() {
       INSERT INTO notifications (user_id, role_slug, department_id, title, message, priority, category, action_url)
       VALUES
         (${doctorUserId}, 'doctor', ${cardioDeptId}, 'Critical Lab Alert: Elevated Troponin-I', 'Patient Rajesh Sharma (UHID: JGY-2026-01001) Troponin-I is 0.42 ng/mL (Reference <0.04). Immediate clinical review advised.', 'CRITICAL', 'CLINICAL', '/dashboard/opd'),
-        (${userMap["admin@jigyasa.demo"]}, 'hospital_admin', ${departmentMap["ADMIN"]}, 'NABH Compliance Audit Milestone', 'Quarterly Clinical Documentation & Medication Safety audit scheduled for upcoming Monday.', 'IMPORTANT', 'OPERATIONAL', '/security/audit-logs'),
+        (${userMap[demoEmails.admin]}, 'hospital_admin', ${departmentMap["ADMIN"]}, 'NABH Compliance Audit Milestone', 'Quarterly Clinical Documentation & Medication Safety audit scheduled for upcoming Monday.', 'IMPORTANT', 'OPERATIONAL', '/security/audit-logs'),
         (NULL, 'nurse', ${departmentMap["NURSE"]}, 'Bed Sanitization Task: ICU-103', 'Bed ICU-103 vacant following discharge. Housekeeping terminal cleaning requested.', 'URGENT', 'OPERATIONAL', '/admin/wards-beds'),
         (NULL, 'pharmacist', ${departmentMap["PHARM"]}, 'Low Inventory Warning: Inj. Noradrenaline 4mg', 'Stock level down to 12 ampoules at Central Pharmacy. Below minimum reorder threshold (25).', 'IMPORTANT', 'OPERATIONAL', '/admin/services-tariffs')
       ON CONFLICT DO NOTHING;
@@ -728,10 +737,10 @@ export async function seedDatabase() {
     await client.query(`
       INSERT INTO audit_logs (user_id, user_email, user_role, action, module, resource, resource_id, before_state, after_state, reason, ip_address)
       VALUES
-        (${userMap["admin@jigyasa.demo"]}, 'admin@jigyasa.demo', 'hospital_admin', 'CREATE', 'ADMIN', 'HospitalSetting', 'HOSPITAL_NAME', NULL, '{"key": "HOSPITAL_NAME", "value": "Jigyasa Super Speciality Hospital"}', 'Hospital enterprise initialization', '127.0.0.1'),
-        (${userMap["admin@jigyasa.demo"]}, 'admin@jigyasa.demo', 'hospital_admin', 'CREATE', 'ADMIN', 'Department', 'EMERG', NULL, '{"name": "Emergency & Trauma Care", "code": "EMERG"}', 'Level-1 Emergency department setup', '127.0.0.1'),
-        (${doctorUserId}, 'doctor@jigyasa.demo', 'doctor', 'SIGN', 'CLINICAL', 'ConsultationNote', '1', '{"is_signed": false}', '{"is_signed": true, "signed_at": "2026-10-29T12:00:00Z"}', 'Cardiology outpatient consultation completion', '127.0.0.1'),
-        (${userMap["admin@jigyasa.demo"]}, 'admin@jigyasa.demo', 'hospital_admin', 'CREATE', 'SECURITY', 'SecurityPolicy', 'BREAK_GLASS', NULL, '{"timeout_hours": 2, "audit_mandatory": true}', 'Enforcing break-glass emergency governance', '127.0.0.1')
+        (${userMap[demoEmails.admin]}, '${demoEmails.admin}', 'hospital_admin', 'CREATE', 'ADMIN', 'HospitalSetting', 'HOSPITAL_NAME', NULL, '{"key": "HOSPITAL_NAME", "value": "Jigyasa Super Speciality Hospital"}', 'Hospital enterprise initialization', '127.0.0.1'),
+        (${userMap[demoEmails.admin]}, '${demoEmails.admin}', 'hospital_admin', 'CREATE', 'ADMIN', 'Department', 'EMERG', NULL, '{"name": "Emergency & Trauma Care", "code": "EMERG"}', 'Level-1 Emergency department setup', '127.0.0.1'),
+        (${doctorUserId}, '${demoEmails.doctor}', 'doctor', 'SIGN', 'CLINICAL', 'ConsultationNote', '1', '{"is_signed": false}', '{"is_signed": true, "signed_at": "2026-10-29T12:00:00Z"}', 'Cardiology outpatient consultation completion', '127.0.0.1'),
+        (${userMap[demoEmails.admin]}, '${demoEmails.admin}', 'hospital_admin', 'CREATE', 'SECURITY', 'SecurityPolicy', 'BREAK_GLASS', NULL, '{"timeout_hours": 2, "audit_mandatory": true}', 'Enforcing break-glass emergency governance', '127.0.0.1')
       ON CONFLICT DO NOTHING;
     `);
 
@@ -1103,4 +1112,3 @@ if (process.argv[1] && process.argv[1].endsWith("seed.js")) {
       process.exit(1);
     });
 }
-

@@ -46,21 +46,22 @@ async function runPhase1Tests() {
 
     // Test 2: Check Test Accounts Existence
     const requiredEmails = [
-      "admin@jigyasa.demo",
-      "doctor@jigyasa.demo",
-      "nurse@jigyasa.demo",
-      "reception@jigyasa.demo",
-      "lab@jigyasa.demo",
-      "pharmacy@jigyasa.demo",
-      "billing@jigyasa.demo",
+      process.env.DEMO_ADMIN_EMAIL || "admin@jigyasa.demo",
+      process.env.DEMO_DOCTOR_EMAIL || "doctor@jigyasa.demo",
+      process.env.DEMO_NURSE_EMAIL || "nurse@jigyasa.demo",
+      process.env.DEMO_RECEPTION_EMAIL || "reception@jigyasa.demo",
+      process.env.DEMO_LAB_EMAIL || "lab@jigyasa.demo",
+      process.env.DEMO_PHARMACY_EMAIL || "pharmacy@jigyasa.demo",
+      process.env.DEMO_BILLING_EMAIL || "billing@jigyasa.demo",
     ];
+    const demoPassword = process.env.DEMO_PASSWORD || "Jigyasa@2026";
 
     for (const email of requiredEmails) {
       const uRes = await client.query("SELECT * FROM users WHERE email = $1", [email]);
       assert(uRes.rows.length === 1, `Test Account: ${email} exists`);
       if (uRes.rows.length === 1) {
-        const matches = await bcrypt.compare("Jigyasa@2026", uRes.rows[0].password_hash);
-        assert(matches, `Password verification for ${email} (Jigyasa@2026)`);
+        const matches = await bcrypt.compare(demoPassword, uRes.rows[0].password_hash);
+        assert(matches, `Password verification for ${email}`);
       }
     }
 
@@ -142,4 +143,3 @@ async function runPhase1Tests() {
 }
 
 runPhase1Tests();
-

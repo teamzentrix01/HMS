@@ -21,6 +21,7 @@ import {
 
 export default function LoginPage() {
   const router = useRouter();
+  const demoPassword = process.env.NEXT_PUBLIC_DEMO_PASSWORD || "Jigyasa@2026";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -31,49 +32,49 @@ export default function LoginPage() {
   const staffRoster = [
     {
       role: "Hospital Admin",
-      email: "admin@jigyasa.demo",
+      email: process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL || "admin@jigyasa.demo",
       icon: Building2,
       desc: "Governance & Masters",
       badge: "bg-purple-50 text-purple-700 border-purple-200",
     },
     {
       role: "Consultant Doctor",
-      email: "doctor@jigyasa.demo",
+      email: process.env.NEXT_PUBLIC_DEMO_DOCTOR_EMAIL || "doctor@jigyasa.demo",
       icon: Stethoscope,
       desc: "OPD, Orders & Rounds",
       badge: "bg-teal-50 text-teal-700 border-teal-200",
     },
     {
       role: "Senior Nurse",
-      email: "nurse@jigyasa.demo",
+      email: process.env.NEXT_PUBLIC_DEMO_NURSE_EMAIL || "nurse@jigyasa.demo",
       icon: HeartPulse,
       desc: "Wards, eMAR & Vitals",
       badge: "bg-sky-50 text-sky-700 border-sky-200",
     },
     {
       role: "Receptionist",
-      email: "reception@jigyasa.demo",
+      email: process.env.NEXT_PUBLIC_DEMO_RECEPTION_EMAIL || "reception@jigyasa.demo",
       icon: UserCheck,
       desc: "Registration & Token Queue",
       badge: "bg-cyan-50 text-cyan-700 border-cyan-200",
     },
     {
       role: "Lab Technician",
-      email: "lab@jigyasa.demo",
+      email: process.env.NEXT_PUBLIC_DEMO_LAB_EMAIL || "lab@jigyasa.demo",
       icon: FlaskConical,
       desc: "Specimens & LIMS",
       badge: "bg-amber-50 text-amber-700 border-amber-200",
     },
     {
       role: "Pharmacist",
-      email: "pharmacy@jigyasa.demo",
+      email: process.env.NEXT_PUBLIC_DEMO_PHARMACY_EMAIL || "pharmacy@jigyasa.demo",
       icon: Pill,
       desc: "e-Rx Queue & Dispense",
       badge: "bg-emerald-50 text-emerald-700 border-emerald-200",
     },
     {
       role: "Billing / Cashier",
-      email: "billing@jigyasa.demo",
+      email: process.env.NEXT_PUBLIC_DEMO_BILLING_EMAIL || "billing@jigyasa.demo",
       icon: CreditCard,
       desc: "Invoices & Payments",
       badge: "bg-slate-50 text-slate-700 border-slate-200",
@@ -122,7 +123,7 @@ export default function LoginPage() {
 
   const applyQuickCredential = (accEmail) => {
     setEmail(accEmail);
-    setPassword("Jigyasa@2026");
+    setPassword(demoPassword);
     setError("");
   };
 
