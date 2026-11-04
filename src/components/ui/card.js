@@ -5,7 +5,7 @@ export function Card({ className, children, ...props }) {
   return (
     <div
       className={cn(
-        "bg-white rounded-xl border border-slate-200/80 shadow-[0_1px_3px_rgba(0,0,0,0.05)] overflow-hidden",
+        "bg-white rounded-2xl border border-slate-200/80 shadow-[0_8px_24px_rgba(15,23,42,0.04)] overflow-hidden",
         className
       )}
       {...props}
@@ -18,7 +18,7 @@ export function Card({ className, children, ...props }) {
 export function CardHeader({ className, children, ...props }) {
   return (
     <div
-      className={cn("px-6 py-4 border-b border-slate-100 flex flex-col gap-1", className)}
+      className={cn("px-5 py-4 border-b border-slate-100 flex flex-col gap-1", className)}
       {...props}
     >
       {children}
@@ -47,7 +47,7 @@ export function CardDescription({ className, children, ...props }) {
 
 export function CardContent({ className, children, ...props }) {
   return (
-    <div className={cn("px-6 py-4", className)} {...props}>
+    <div     className={cn("px-5 py-4", className)} {...props}>
       {children}
     </div>
   );
@@ -63,4 +63,3 @@ export function CardFooter({ className, children, ...props }) {
     </div>
   );
 }
-

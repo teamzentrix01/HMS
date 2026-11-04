@@ -140,32 +140,34 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-6">
       {/* Welcome Banner */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="relative overflow-hidden bg-[#10243b] rounded-2xl border border-slate-700/50 p-6 sm:p-7 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-5">
+        <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-teal-400/10 blur-2xl" />
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold tracking-tight text-slate-900">
+          <div className="relative flex items-center gap-2 flex-wrap">
+            <p className="w-full text-[10px] font-bold uppercase tracking-[0.2em] text-teal-300">Clinical command center</p>
+            <h1 className="text-xl font-bold tracking-tight text-white">
               Welcome back, {session?.firstName} {session?.lastName}
             </h1>
-            <Badge variant="teal" className="capitalize">
+            <Badge variant="teal" className="capitalize bg-white/10 border-white/20 text-teal-100">
               {session?.roleName || session?.roleSlug?.replace("_", " ")}
             </Badge>
           </div>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="relative text-xs text-slate-300 mt-2">
             Jigyasa Super Speciality Hospital • Sector 62 Noida Campus • Active Department:{" "}
-            <strong>{session?.departmentName || "Executive Administration"}</strong>
+            <strong className="text-white">{session?.departmentName || "Executive Administration"}</strong>
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="relative flex items-center gap-2">
           <Link
             href="/admin/wards-beds"
-            className="px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 text-xs font-semibold text-slate-700 transition-colors"
+            className="px-3 py-2 rounded-lg border border-white/15 bg-white/10 hover:bg-white/15 text-xs font-semibold text-white transition-colors"
           >
             Visual Bed Board
           </Link>
           <Link
             href="/security/audit-logs"
-            className="px-3 py-1.5 rounded-lg bg-teal-700 hover:bg-teal-800 text-xs font-semibold text-white shadow-xs transition-colors"
+            className="px-3 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-xs font-semibold text-slate-950 shadow-xs transition-colors"
           >
             Audit Trail
           </Link>
@@ -173,13 +175,13 @@ export default async function DashboardPage() {
       </div>
 
       {/* Top 6 High-Density KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
         {topStats.map((stat, i) => {
           const Icon = stat.icon;
           return (
-            <Card key={i} className="p-4 flex flex-col justify-between">
+            <Card key={i} className="p-4 flex flex-col justify-between hover:-translate-y-0.5 transition-transform">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-500">
+                <span className="text-[11px] font-bold uppercase tracking-wide text-slate-500">
                   {stat.title}
                 </span>
                 <div className={`p-1.5 rounded-lg border ${stat.color}`}>
@@ -420,4 +422,3 @@ export default async function DashboardPage() {
     </div>
   );
 }
-

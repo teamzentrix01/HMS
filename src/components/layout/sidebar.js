@@ -218,19 +218,20 @@ export function Sidebar({ user }) {
   };
 
   const navGroups = getNavItems();
+  const mobileItems = navGroups.flatMap((group) => group.items).slice(0, 4);
 
   return (
-    <aside className="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 border-r border-slate-800 select-none">
+    <aside className="dashboard-shell-sidebar w-64 bg-[#0b172a] text-slate-300 flex flex-col shrink-0 border-r border-slate-800 select-none transition-[width] duration-200">
       {/* Brand Header */}
       <div className="h-16 flex items-center px-5 border-b border-slate-800 gap-3 bg-slate-950">
         <div className="w-9 h-9 rounded-lg bg-teal-600 flex items-center justify-center text-white font-black text-lg tracking-wider shadow-md">
           J
         </div>
         <div className="flex flex-col">
-          <span className="font-bold text-sm tracking-wide text-white leading-tight">
+          <span className="sidebar-brand-copy font-bold text-sm tracking-wide text-white leading-tight">
             JIGYASA HMS
           </span>
-          <span className="text-[10px] text-teal-400 font-medium tracking-wider uppercase">
+          <span className="sidebar-brand-copy text-[10px] text-teal-400 font-medium tracking-wider uppercase">
             Super Speciality Hospital
           </span>
         </div>
@@ -240,7 +241,7 @@ export function Sidebar({ user }) {
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
         {navGroups.map((group, idx) => (
           <div key={idx} className="space-y-1">
-            <h4 className="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <h4 className="sidebar-category px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
               {group.category}
             </h4>
             <div className="space-y-0.5 pt-1">
@@ -252,7 +253,7 @@ export function Sidebar({ user }) {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      "flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors group",
+                      "flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-xl transition-all group",
                       isActive
                         ? "bg-teal-700/80 text-white shadow-xs font-semibold"
                         : "text-slate-300 hover:text-white hover:bg-slate-800/60"
@@ -264,7 +265,7 @@ export function Sidebar({ user }) {
                         isActive ? "text-teal-300" : "text-slate-400 group-hover:text-teal-400"
                       )}
                     />
-                    <span className="truncate">{item.label}</span>
+                    <span className="sidebar-label truncate">{item.label}</span>
                   </Link>
                 );
               })}
@@ -277,9 +278,30 @@ export function Sidebar({ user }) {
       <div className="p-3 border-t border-slate-800/80 bg-slate-950/60">
         <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-slate-900 text-xs text-slate-400">
           <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span className="truncate font-mono text-[11px]">System Online (PostgreSQL 18)</span>
+          <span className="sidebar-status-copy truncate font-mono text-[11px]">System Online · PostgreSQL</span>
         </div>
       </div>
+
+      <nav className="mobile-nav fixed bottom-0 left-0 right-0 z-40 grid grid-cols-4 border-t border-slate-200 bg-white/95 p-1.5 shadow-[0_-8px_24px_rgba(15,23,42,0.12)] backdrop-blur sm:hidden">
+        {mobileItems.map((item) => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-label={item.label}
+              className={cn(
+                "flex min-w-0 flex-col items-center gap-1 rounded-xl px-1 py-2 text-[10px] font-semibold",
+                isActive ? "bg-teal-50 text-teal-800" : "text-slate-500"
+              )}
+            >
+              <Icon className="h-4 w-4" />
+              <span className="max-w-full truncate">{item.label.split(" ")[0]}</span>
+            </Link>
+          );
+        })}
+      </nav>
     </aside>
   );
 }

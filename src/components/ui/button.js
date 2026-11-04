@@ -16,7 +16,7 @@ export const Button = React.forwardRef(
     ref
   ) => {
     const baseStyles =
-      "inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none cursor-pointer";
+      "inline-flex items-center justify-center font-semibold rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-teal-600 focus:ring-offset-1 disabled:opacity-50 disabled:pointer-events-none cursor-pointer active:scale-[0.98]";
 
     const variants = {
       primary:
@@ -75,4 +75,3 @@ export const Button = React.forwardRef(
   }
 );
 Button.displayName = "Button";
-

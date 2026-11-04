@@ -139,7 +139,7 @@ export function Header({ user }) {
 
   return (
     <>
-      <header className="h-16 bg-white border-b border-slate-200/90 px-6 flex items-center justify-between gap-4 sticky top-0 z-30 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
+      <header className="h-16 bg-white/95 backdrop-blur border-b border-slate-200/90 px-3 sm:px-6 flex items-center justify-between gap-3 sticky top-0 z-30 shadow-[0_1px_8px_rgba(15,23,42,0.05)]">
         {/* Left: Prominent Live Employee & Patient Search Bar */}
         <div ref={searchContainerRef} className="relative flex-1 max-w-xl">
           <div className="relative">
@@ -157,7 +157,7 @@ export function Header({ user }) {
                   setIsSearchOpen(true);
                 }
               }}
-              placeholder="Search employees, doctors (EMP ID/name), patients (UHID)..."
+              placeholder="Search staff, patients, UHID..."
               className="w-full h-9.5 rounded-xl border border-slate-200 bg-slate-50/70 pl-9.5 pr-20 text-xs text-slate-900 placeholder-slate-400 focus:bg-white focus:border-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-600/20 transition-all"
             />
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
