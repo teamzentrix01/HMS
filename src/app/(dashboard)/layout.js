@@ -11,7 +11,7 @@ export default async function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex h-screen w-full bg-slate-100 overflow-hidden text-slate-900 clinical-grid">
+    <div className="flex h-screen w-full bg-slate-100 overflow-hidden text-slate-900">
       {/* Sidebar Navigation */}
       <Sidebar user={session} />
 
