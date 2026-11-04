@@ -95,7 +95,7 @@ export default function LoginPage() {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
+        body: JSON.stringify({ email: email.trim(), password, rememberMe }),
       });
 
       let data;
@@ -182,8 +182,8 @@ export default function LoginPage() {
                 <label className="block text-xs font-semibold text-slate-700">
                   Password
                 </label>
-                <span className="text-[11px] text-teal-700 hover:text-teal-800 cursor-pointer">
-                  Forgot credentials?
+                <span className="text-[11px] text-slate-400">
+                  Contact Hospital IT Helpdesk
                 </span>
               </div>
               <div className="relative">

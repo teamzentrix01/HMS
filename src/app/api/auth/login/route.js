@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { users, roles, departmentAssignments, departments } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { verifyPassword } from "@/lib/auth/passwords";
 import { createSessionToken, setSessionCookie } from "@/lib/auth/session";
 import { logAuditEvent } from "@/lib/audit/logger";
 
 export async function POST(request) {
   try {
-    const { email, password } = await request.json();
+    const { email, password, rememberMe = false } = await request.json();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -33,7 +33,12 @@ export async function POST(request) {
       })
       .from(users)
       .innerJoin(roles, eq(users.roleId, roles.id))
-      .where(eq(users.email, email.toLowerCase().trim()))
+      .where(
+        or(
+          eq(users.email, email.toLowerCase().trim()),
+          eq(users.employeeId, email.trim().toUpperCase())
+        )
+      )
       .limit(1);
 
     if (userResult.length === 0) {
@@ -89,7 +94,9 @@ export async function POST(request) {
     };
 
     const token = await createSessionToken(sessionPayload);
-    await setSessionCookie(token);
+    await setSessionCookie(token, {
+      maxAge: rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24,
+    });
 
     // Update lastLoginAt
     await db
@@ -121,4 +128,3 @@ export async function POST(request) {
     );
   }
 }
-

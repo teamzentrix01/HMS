@@ -26,6 +26,7 @@ export function Header({ user }) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isBreakGlassOpen, setIsBreakGlassOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [switchError, setSwitchError] = useState("");
 
   // Live Inline Header Search
   const [headerQuery, setHeaderQuery] = useState("");
@@ -107,16 +108,17 @@ export function Header({ user }) {
 
   // Staff Quick Switch (clean role switcher for testing)
   const staffSwitchAccounts = [
-    { email: "admin@jigyasa.demo", role: "Hospital Admin", label: "Dr. Vikram Aditya (Admin)" },
-    { email: "doctor@jigyasa.demo", role: "Consultant Doctor", label: "Dr. Arvind Sharma (Cardiology)" },
-    { email: "nurse@jigyasa.demo", role: "Senior Nurse", label: "Pooja Nair (CCU Incharge)" },
-    { email: "reception@jigyasa.demo", role: "Receptionist", label: "Sneha Patel (Front Desk)" },
-    { email: "lab@jigyasa.demo", role: "Lab Technician", label: "Rahul Verma (Biochem LIMS)" },
-    { email: "pharmacy@jigyasa.demo", role: "Pharmacist", label: "Amit Bansal (Pharmacy Incharge)" },
-    { email: "billing@jigyasa.demo", role: "Cashier", label: "Deepak Kapoor (Accounts/Billing)" },
+    { email: process.env.NEXT_PUBLIC_DEMO_ADMIN_EMAIL || "admin@jigyasa.demo", role: "Hospital Admin", label: "Dr. Vikram Aditya (Admin)" },
+    { email: process.env.NEXT_PUBLIC_DEMO_DOCTOR_EMAIL || "doctor@jigyasa.demo", role: "Consultant Doctor", label: "Dr. Arvind Sharma (Cardiology)" },
+    { email: process.env.NEXT_PUBLIC_DEMO_NURSE_EMAIL || "nurse@jigyasa.demo", role: "Senior Nurse", label: "Pooja Nair (CCU Incharge)" },
+    { email: process.env.NEXT_PUBLIC_DEMO_RECEPTION_EMAIL || "reception@jigyasa.demo", role: "Receptionist", label: "Sneha Patel (Front Desk)" },
+    { email: process.env.NEXT_PUBLIC_DEMO_LAB_EMAIL || "lab@jigyasa.demo", role: "Lab Technician", label: "Rahul Verma (Biochem LIMS)" },
+    { email: process.env.NEXT_PUBLIC_DEMO_PHARMACY_EMAIL || "pharmacy@jigyasa.demo", role: "Pharmacist", label: "Amit Bansal (Pharmacy Incharge)" },
+    { email: process.env.NEXT_PUBLIC_DEMO_BILLING_EMAIL || "billing@jigyasa.demo", role: "Cashier", label: "Deepak Kapoor (Accounts/Billing)" },
   ];
 
   const handleSwitchAccount = async (email) => {
+    setSwitchError("");
     try {
       const res = await fetch("/api/auth/demo-switch", {
         method: "POST",
@@ -125,9 +127,13 @@ export function Header({ user }) {
       });
       if (res.ok) {
         window.location.reload();
+      } else {
+        const data = await res.json().catch(() => ({}));
+        setSwitchError(data.error || "Unable to switch duty profile.");
       }
     } catch (err) {
       console.error(err);
+      setSwitchError("Unable to switch duty profile. Check your connection.");
     }
   };
 
@@ -341,7 +347,8 @@ export function Header({ user }) {
                     <span>Staff & Employee Directory</span>
                   </button>
 
-                  {/* Switch Staff Account (Clean internal helper) */}
+                  {/* Switch Staff Account (development/evaluation only) */}
+                  {process.env.NEXT_PUBLIC_ENABLE_DEMO_SWITCH === "true" && (
                   <div className="pt-2 border-t border-slate-100">
                     <div className="px-2 py-1 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
                       Switch Duty Profile
@@ -370,7 +377,11 @@ export function Header({ user }) {
                         </button>
                       ))}
                     </div>
+                    {switchError && (
+                      <p className="px-2 pt-2 text-[10px] text-red-600">{switchError}</p>
+                    )}
                   </div>
+                  )}
 
                   <div className="pt-2 border-t border-slate-100">
                     <button

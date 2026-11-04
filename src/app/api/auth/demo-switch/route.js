@@ -2,12 +2,28 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { users, roles, departmentAssignments, departments } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { createSessionToken, setSessionCookie } from "@/lib/auth/session";
+import {
+  createSessionToken,
+  setSessionCookie,
+  getCurrentSession,
+} from "@/lib/auth/session";
 import { logAuditEvent } from "@/lib/audit/logger";
 
 export async function POST(request) {
   try {
+    if (process.env.ENABLE_DEMO_SWITCH !== "true") {
+      return NextResponse.json({ error: "Duty profile switching is disabled" }, { status: 403 });
+    }
+
+    const session = await getCurrentSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const { email } = await request.json();
+    if (!email || typeof email !== "string") {
+      return NextResponse.json({ error: "A valid demo account is required" }, { status: 400 });
+    }
 
     const userResult = await db
       .select({
@@ -78,4 +94,3 @@ export async function POST(request) {
     return NextResponse.json({ error: "Failed to switch role" }, { status: 500 });
   }
 }
-

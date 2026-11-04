@@ -2,8 +2,14 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
 const SESSION_COOKIE_NAME = "jigyasa_hms_session";
+const configuredSecret = process.env.SESSION_SECRET;
+
+if (process.env.NODE_ENV === "production" && !configuredSecret) {
+  throw new Error("SESSION_SECRET must be configured in production.");
+}
+
 const SECRET_KEY = new TextEncoder().encode(
-  process.env.SESSION_SECRET ||
+  configuredSecret ||
     "jigyasa-super-speciality-hospital-jwt-secret-2026-secure-session-key-32-chars-min"
 );
 
@@ -31,14 +37,14 @@ export async function getCurrentSession() {
   return await verifySessionToken(token);
 }
 
-export async function setSessionCookie(token) {
+export async function setSessionCookie(token, options = {}) {
   const cookieStore = await cookies();
   cookieStore.set(SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24, // 24 hours
+    maxAge: options.maxAge || 60 * 60 * 24,
   });
 }
 
@@ -54,4 +60,3 @@ export async function clearSessionCookie() {
 }
 
 export const getSession = getCurrentSession;
-
